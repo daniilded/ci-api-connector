@@ -8,35 +8,7 @@ class Medium {
         {
                 $this->access_token = $params['access_token'];
         }
-
-        public function get_profile()
-        {
-                return $this->getRequest('https://api.medium.com/v1/me');
-        }
-
-        public function get_publications()
-        {
-                $profile = $this->getRequest('https://api.medium.com/v1/me');
-                $profile = json_decode($profile);
-                $url = "https://api.medium.com/v1/users/" . $profile->data->id . "/publications";
-                return $this->getRequest($url);
-        }
-
-        public function post_post($title,  $content, $contentFormat="html", $publishStatus="draft")
-        {
-                $profile = $this->getRequest('https://api.medium.com/v1/me');
-                $profile = json_decode($profile);
-                $url = "https://api.medium.com/v1/users/" . $profile->data->id . "/posts";
-                $data = array(
-                        'title' => $title,
-                        'content' => $content,
-                        'contentFormat' => $contentFormat,
-                        'publishStatus' => $publishStatus
-                );
-                $data = json_encode($data);
-                return $this->postRequest($url, $data);
-        }
-
+        
         private function getRequest($url, $timeout = 10)
         {
                 $ssl = stripos($url,'https://') === 0 ? true : false;
@@ -71,7 +43,7 @@ class Medium {
                 return $returnData;
         }
 
-        function postRequest($url, $data, $timeout = 10)
+        private function postRequest($url, $data, $timeout = 10)
         {
                 $curlObj = curl_init();
                 $ssl = stripos($url,'https://') === 0 ? true : false;
@@ -106,4 +78,33 @@ class Medium {
                 curl_close($curlObj);
                 return $returnData;
         }
+
+        public function get_profile()
+        {
+                return $this->getRequest('https://api.medium.com/v1/me');
+        }
+
+        public function get_publications()
+        {
+                $profile = $this->getRequest('https://api.medium.com/v1/me');
+                $profile = json_decode($profile);
+                $url = "https://api.medium.com/v1/users/" . $profile->data->id . "/publications";
+                return $this->getRequest($url);
+        }
+
+        public function post_post($title,  $content, $contentFormat="html", $publishStatus="draft")
+        {
+                $profile = $this->getRequest('https://api.medium.com/v1/me');
+                $profile = json_decode($profile);
+                $url = "https://api.medium.com/v1/users/" . $profile->data->id . "/posts";
+                $data = array(
+                        'title' => $title,
+                        'content' => $content,
+                        'contentFormat' => $contentFormat,
+                        'publishStatus' => $publishStatus
+                );
+                $data = json_encode($data);
+                return $this->postRequest($url, $data);
+        }
+
 }
